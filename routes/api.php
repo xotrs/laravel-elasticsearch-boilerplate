@@ -21,9 +21,10 @@ Route::group(['prefix' => 'search'], function () {
     Route::get('/', 'SearchController@index');
 });
 
-Route::group(['prefix' => 'board'], function () {
-    Route::post('/create-index', 'BoardController@createIndex');
-    Route::get('/{id}', 'BoardController@show');
-    Route::delete('/{id}', 'BoardController@destroy');
-    Route::put('/update', 'BoardController@update');
-});
+Route::resource('board', 'BoardController');
+//Route::group(['prefix' => 'board'], function () {
+//    Route::post('/create-index', 'BoardController@createIndex');
+//    Route::get('/{id}', 'BoardController@show');
+//    Route::delete('/destroy', 'BoardController@destroy');
+//    Route::put('/update', 'BoardController@update');
+//});
