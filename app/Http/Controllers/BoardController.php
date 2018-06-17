@@ -3,10 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Board;
+use App\Repositories\BoardRepository;
 use Illuminate\Http\Request;
 
 class BoardController extends Controller
 {
+    protected $model;
+
+    /**
+     * BoardController constructor.
+     */
+    public function __construct(Board $board)
+    {
+        $this->model = new BoardRepository($board);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -24,7 +35,7 @@ class BoardController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -35,7 +46,7 @@ class BoardController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->model->create($request->only($this->model->getModel()->fillable)); // 데이터베이스 & 엘라스틱서치 삽입
     }
 
     /**
@@ -71,8 +82,7 @@ class BoardController extends Controller
      */
     public function update(Request $request, Board $board)
     {
-        $board->update($request->all()); // 데이터베이스 업데이트
-        $board->update(); // 엘라스틱서치 Document 업데이트
+        $this->model->update($request->only($this->model->getModel()->fillable), $board['id']); // 데이터베이스 & 엘라스틱서치 업데이트
     }
 
     /**
