@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'search'], function () {
     Route::get('/', 'SearchController@index');
+    Route::get('/test', 'SearchController@test');
 });
 
 Route::resource('board', 'BoardController');

@@ -26,4 +26,20 @@ class Board extends Model
     public $searchable = [
         'id', 'title', 'content', 'created_at', 'updated_at'
     ];
+
+    /**
+     * @return array
+     */
+    public function getAttributes(): array
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * @param array $attributes
+     */
+    public function setAttributes(array $attributes): void
+    {
+        $this->attributes = $attributes;
+    }
 }
