@@ -21,6 +21,7 @@ Route::group(['prefix' => 'search'], function () {
     Route::get('/', 'SearchController@index');
 });
 
+Route::get('board/sync', 'BoardController@syncDatabaseAndElasticsearch');
 Route::resource('board', 'BoardController');
 //Route::group(['prefix' => 'board'], function () {
 //    Route::post('/create-index', 'BoardController@createIndex');

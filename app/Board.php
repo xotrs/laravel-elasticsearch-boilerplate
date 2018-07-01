@@ -9,7 +9,6 @@
 namespace App;
 
 
-use App\Http\Controllers\BoardController;
 use Illuminate\Database\Eloquent\Model;
 
 class Board extends Model
@@ -17,17 +16,6 @@ class Board extends Model
     protected $fillable = [
         'id', 'title', 'content', 'created_at', 'updated_at'
     ];
-    protected $boardController;
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::updating(function($board) {
-            $boardController = new BoardController($board);
-            $boardController->updateDocument($board);
-        });
-    }
 
     /**
      * @return array

@@ -15,11 +15,12 @@ class BoardController extends Controller
     /**
      * BoardController constructor.
      * @param Board $board
+     * @param ElasticsearchConfig $elasticsearchConfig
      */
-    public function __construct(Board $board)
+    public function __construct(Board $board, ElasticsearchConfig $elasticsearchConfig)
     {
         $this->model = new BoardRepository($board);
-        $this->elasticsearchClient = new ElasticsearchConfig();
+        $this->elasticsearchClient = $elasticsearchConfig;
     }
 
     /**
@@ -137,20 +138,9 @@ class BoardController extends Controller
      */
     public function update(Request $request, Board $board)
     {
-        $this->model->update($request->only($this->model->getModel()->fillable), $board['id']);
+        Board::find($board['id'])->update($request->only($this->model->getModel()->fillable));
 
         return "success";
-    }
-
-    public function updateDocument(Board $board){
-        $params = [
-            'index' => 'board',
-            'type' => 'v1',
-            'id' => $board['id'],
-            'body' => $board
-        ];
-
-        return $this->elasticsearchClient->getClient()->index($params);
     }
 
     /**
