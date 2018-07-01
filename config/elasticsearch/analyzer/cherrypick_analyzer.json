@@ -1,0 +1,59 @@
+{
+  "index" : {
+    "analysis" : {
+      "filter" : {
+        "replace_slash_pattern_filter" : {
+          "type": "pattern_replace",
+          "pattern": "/.*",
+          "replacement": ""
+        },
+        "synonym" : {
+                "type" : "synonym",
+                "synonyms_path" : "/usr/share/elasticsearch/config/analysis/synonyms.txt"
+            }
+        },
+      "analyzer" : {
+        "custom_search_analyzer" : {
+          "type" : "custom",
+          "filter" : [ "lowercase", "trim", "replace_slash_pattern_filter", "synonym" ],
+          "tokenizer" : "seunjeon_default_tokenizer"
+        },
+        "ngram_analyzer" : {
+          "type" : "custom",
+          "tokenizer" : "ngram_tokenizer",
+          "filter" : ["lowercase", "trim"]
+        },
+        "custom_index_analyzer" : {
+          "type" : "custom",
+          "filter" : [ "lowercase", "trim", "replace_slash_pattern_filter", "synonym" ],
+          "tokenizer" : "ngram_tokenizer"
+        },
+        "korean": {
+          "type": "custom",
+          "filter" : [ "lowercase", "trim", "replace_slash_pattern_filter", "synonym" ],
+          "tokenizer": "seunjeon_default_tokenizer"
+        }
+
+      },
+      "tokenizer" : {
+        "ngram_tokenizer" : {
+          "type" : "nGram",
+          "min_gram" : "1",
+          "max_gram" : "8",
+          "token_chars": [ "letter", "digit", "punctuation", "symbol" ]
+        },
+        "seunjeon_default_tokenizer": {
+          "type": "seunjeon_tokenizer",
+          "index_eojeol": false,
+          "user_words": [
+            "낄끼+빠빠,-100",
+            "c\\+\\+",
+            "어그로",
+            "버카충",
+            "abc마트"
+          ]
+        }
+      }
+    }
+  }
+}

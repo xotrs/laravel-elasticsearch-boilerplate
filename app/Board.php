@@ -9,23 +9,25 @@
 namespace App;
 
 
+use App\Http\Controllers\BoardController;
 use Illuminate\Database\Eloquent\Model;
-use Sleimanx2\Plastic\Searchable;
 
 class Board extends Model
 {
-    use Searchable;
-
-    public $documentIndex = 'board';
-    public $documentType = 'v1';
-
     protected $fillable = [
         'id', 'title', 'content', 'created_at', 'updated_at'
     ];
+    protected $boardController;
 
-    public $searchable = [
-        'id', 'title', 'content', 'created_at', 'updated_at'
-    ];
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updating(function($board) {
+            $boardController = new BoardController($board);
+            $boardController->updateDocument($board);
+        });
+    }
 
     /**
      * @return array

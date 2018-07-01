@@ -4,18 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Board;
 use App\Repositories\BoardRepository;
+use ElasticsearchConfig;
 use Illuminate\Http\Request;
 
 class BoardController extends Controller
 {
     protected $model;
+    protected $elasticsearchClient;
 
     /**
      * BoardController constructor.
+     * @param Board $board
      */
     public function __construct(Board $board)
     {
         $this->model = new BoardRepository($board);
+        $this->elasticsearchClient = new ElasticsearchConfig();
     }
 
     /**
@@ -38,16 +42,67 @@ class BoardController extends Controller
 
     }
 
+//    public function sync(Request $request)
+//    {
+//        foreach ($this->model->all() as $board){
+//            $params = [
+//                'index' => 'board',
+//                'type' => 'v1',
+//                'id' => $board['id'],
+//                'body' => $board
+//            ];
+//
+//            $this->elasticsearchClient->getClient()->index($params);
+//        };
+//    }
+
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return string
      */
-    public function store(Request $request)
+    public function store()
     {
-        $this->model->create($request->only($this->model->getModel()->fillable)); // 데이터베이스 & 엘라스틱서치 삽입
+
     }
+
+    public function syncDatabaseAndElasticsearch(){
+        //In Elasticsearch Not in Database
+        $params = [
+            'index' => 'board',
+            'type' => 'v1',
+            'body' => ['sort' => ['_id' => 'asc']]
+        ];
+
+        $result = $this->elasticsearchClient->getClient()->search($params);
+
+        if($result['hits']['total'] > 0){
+            $boards = $result['hits']['hits'];
+
+            foreach($boards as $board){
+                $boardDatabaseResult = Board::query()->where('id', $board['_id'])->get();
+
+                if($boardDatabaseResult->isEmpty()){
+                    $this->elasticsearchClient->getClient()->delete(['index' => 'board', 'type' => 'v1', 'id' => $board['_id']]);
+                }
+            }
+        }
+        //In Database Not in Elasticsearch
+        foreach($this->model->all() as $board){
+            if(!($this->elasticsearchClient->getClient()->exists(['index' => 'board', 'type' => 'v1', 'id' => $board['id']]))){
+                $params = [
+                    'index' => 'board',
+                    'type' => 'v1',
+                    'id' => $board['id'],
+                    'body' => $board
+                ];
+
+                $this->elasticsearchClient->getClient()->index($params);
+            }
+        }
+        return 'success';
+    }
+
 
     /**
      * Display the specified resource.
@@ -78,11 +133,24 @@ class BoardController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Board  $board
-     * @return \Illuminate\Http\Response
+     * @return string
      */
     public function update(Request $request, Board $board)
     {
-        $this->model->update($request->only($this->model->getModel()->fillable), $board['id']); // 데이터베이스 & 엘라스틱서치 업데이트
+        $this->model->update($request->only($this->model->getModel()->fillable), $board['id']);
+
+        return "success";
+    }
+
+    public function updateDocument(Board $board){
+        $params = [
+            'index' => 'board',
+            'type' => 'v1',
+            'id' => $board['id'],
+            'body' => $board
+        ];
+
+        return $this->elasticsearchClient->getClient()->index($params);
     }
 
     /**
@@ -93,9 +161,6 @@ class BoardController extends Controller
      */
     public function destroy(Board $board)
     {
-        $boardId = $board['id'];
-        $board = Board::where('id', '=', $boardId)->get()[0];
-        $result = $board->delete();
-        print($result);
+
     }
 }

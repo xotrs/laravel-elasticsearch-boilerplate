@@ -1,0 +1,27 @@
+{
+  "v1": {
+    "properties" : {
+      "id" : {
+        "type" : "long"
+      },
+      "title" : {
+        "type" : "text",
+        "analyzer": "custom_index_analyzer",
+        "search_analyzer": "custom_search_analyzer"
+      },
+      "content" : {
+        "type" : "text",
+        "analyzer": "custom_index_analyzer",
+        "search_analyzer": "custom_search_analyzer"
+      },
+      "created_at" : {
+        "type" : "date",
+        "format": "yyyy-MM-dd HH:mm:ss"
+      },
+      "updated_at" : {
+        "type" : "date",
+        "format": "yyyy-MM-dd HH:mm:ss"
+      }
+    }
+  }
+}
