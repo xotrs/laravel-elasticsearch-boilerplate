@@ -27,14 +27,14 @@ class BoardObserver
 
     public function updated(Board $board)
     {
-        $params = [
-            'index' => 'board',
-            'type' => 'v1',
-            'id' => $board['id'],
-            'body' => $board
-        ];
-
-        return $this->elasticsearchClient->getClient()->index($params);
+//        $params = [
+//            'index' => 'board',
+//            'type' => 'v1',
+//            'id' => $board['id'],
+//            'body' => $board
+//        ];
+//
+//        return $this->elasticsearchClient->getClient()->index($params);
     }
 
 }

@@ -138,9 +138,16 @@ class BoardController extends Controller
      */
     public function update(Request $request, Board $board)
     {
-        Board::find($board['id'])->update($request->only($this->model->getModel()->fillable));
+//        Board::where('id', $board['id'])->update($request->only($this->model->getModel()->fillable));
+        Board::where('id', $board['id'])->update(['title' => 'selling']);
 
-        return "success";
+        $boardResult = new Board();
+        $boardResult->setAttribute('id', $board['id']);
+        event('board.updated', [$boardResult]);
+
+
+
+        return;
     }
 
     /**

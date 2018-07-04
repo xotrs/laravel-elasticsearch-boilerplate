@@ -15,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Board::observe(BoardObserver::class);
+//        Board::observe(BoardObserver::class);
     }
 
     /**
