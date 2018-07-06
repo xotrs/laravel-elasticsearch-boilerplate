@@ -8,12 +8,10 @@
 
 namespace App\Repositories;
 
+use App\Board;
+use App\Dto\Result;
+
 interface BoardRepositoryInterface
 {
-    public function all();
-    public function create(array $data);
-    public function update(array $data, $id);
-    public function destroy($id);
-    public function show($id);
-
+    public function update(Board $board) : Result;
 }

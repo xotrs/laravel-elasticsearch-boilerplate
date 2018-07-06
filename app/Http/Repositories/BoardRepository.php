@@ -8,66 +8,32 @@
 
 namespace App\Repositories;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Board;
+use App\Dto\Result;
 
 class BoardRepository implements BoardRepositoryInterface
 {
-    // model property on class instances
-    protected $model;
+    private $board;
+    private $result;
 
     // Constructor to bind model to repo
-    public function __construct(Model $model)
+    public function __construct(Board $board, Result $result)
     {
-        $this->model = $model;
+        $this->board = $board;
+        $this->result = $result;
     }
 
-    // Get all instances of model
-    public function all()
+    /**
+     * @param Board $board
+     * @return Result
+     */
+    public function update(Board $board) : Result
     {
-        return $this->model->all();
-    }
+        $board->setAttributes($board->getFillable());
+        $boardUpdateResult = $board->save();
 
-    // create a new record in the database
-    public function create(array $data)
-    {
-        return $this->model->create($data);
-    }
+        $this->result->setResult($boardUpdateResult);
 
-    // update record in the database
-    public function update(array $data, $id)
-    {
-        $record = $this->model->find($id);
-        return $record->update($data);
-    }
-
-    // remove record from the database
-    public function destroy($id)
-    {
-        return $this->model->destroy($id);
-    }
-
-    // show the record with the given id
-    public function show($id)
-    {
-        return $this->model->findOrFail($id);
-    }
-
-    // Get the associated model
-    public function getModel()
-    {
-        return $this->model;
-    }
-
-    // Set the associated model
-    public function setModel($model)
-    {
-        $this->model = $model;
-        return $this;
-    }
-
-    // Eager load database relationships
-    public function with($relations)
-    {
-        return $this->model->with($relations);
+        return $this->result->getResult();
     }
 }
