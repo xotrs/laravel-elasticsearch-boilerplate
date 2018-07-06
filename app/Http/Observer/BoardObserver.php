@@ -22,7 +22,7 @@ class BoardObserver
      */
     public function __construct(ElasticsearchConfig $elasticsearchClient)
     {
-        $this->elasticsearchClient = new ElasticsearchConfig();
+        $this->elasticsearchClient = $elasticsearchClient;
     }
 
     public function updated(Board $board)

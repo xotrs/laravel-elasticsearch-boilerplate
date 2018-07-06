@@ -9,7 +9,6 @@
 namespace App\Http\Service;
 
 use App\Board;
-use App\Dto\Result;
 use App\Repositories\BoardRepository;
 
 class BoardService
@@ -27,9 +26,9 @@ class BoardService
 
     /**
      * @param Board $board
-     * @return Result
+     * @return bool
      */
-    public function update(Board $board) : Result
+    public function update(Board $board) : bool
     {
         return $this->boardRepository->update($board);
     }

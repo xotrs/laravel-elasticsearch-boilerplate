@@ -9,9 +9,9 @@
 namespace App\Repositories;
 
 use App\Board;
-use App\Dto\Result;
+use phpDocumentor\Reflection\Types\Boolean;
 
 interface BoardRepositoryInterface
 {
-    public function update(Board $board) : Result;
+    public function update(Board $board) : bool;
 }

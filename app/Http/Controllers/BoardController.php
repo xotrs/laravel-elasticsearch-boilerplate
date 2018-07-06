@@ -6,7 +6,6 @@ use App\Board;
 use App\Http\Service\BoardService;
 use ElasticsearchConfig;
 use Illuminate\Http\Request;
-use App\Dto\Result;
 
 class BoardController extends Controller
 {
@@ -72,13 +71,13 @@ class BoardController extends Controller
      *
      * @param Request $request
      * @param  \App\Board $board
-     * @return string
+     * @return bool
      */
-    public function update(Request $request, Board $board) : Result
+    public function update(Request $request, Board $board)
     {
         $result = $this->boardService->update($board->fillable($request->all()));
 
-        return $result;
+        return response()->json(['result' => $result]);
     }
 
     /**
