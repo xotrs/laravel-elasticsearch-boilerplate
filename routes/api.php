@@ -17,15 +17,9 @@ use Illuminate\Support\Facades\Route;
 //    return $request->user();
 //});
 
+Route::resource('board', 'BoardController');
+
 Route::group(['prefix' => 'search'], function () {
-    Route::get('/', 'SearchController@index');
+    Route::get('/{keyword}', 'SearchController@search');
 });
 
-Route::get('board/sync', 'BoardController@syncDatabaseAndElasticsearch');
-Route::resource('board', 'BoardController');
-//Route::group(['prefix' => 'board'], function () {
-//    Route::post('/create-index', 'BoardController@createIndex');
-//    Route::get('/{id}', 'BoardController@show');
-//    Route::delete('/destroy', 'BoardController@destroy');
-//    Route::put('/update', 'BoardController@update');
-//});

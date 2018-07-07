@@ -24,13 +24,19 @@ class BoardService
         $this->boardRepository = $boardRepository;
     }
 
-    /**
-     * @param Board $board
-     * @return bool
-     */
     public function update(Board $board) : bool
     {
         return $this->boardRepository->update($board);
+    }
+
+    public function delete(Board $board) : bool
+    {
+        return $this->boardRepository->delete($board);
+    }
+
+    public function store(Board $board) : bool
+    {
+        return $this->boardRepository->store($board);
     }
 }
 

@@ -26,7 +26,7 @@
         "custom_index_analyzer" : {
           "type" : "custom",
           "filter" : [ "lowercase", "trim", "replace_slash_pattern_filter", "synonym" ],
-          "tokenizer" : "ngram_tokenizer"
+          "tokenizer" : "seunjeon_default_tokenizer"
         },
         "korean": {
           "type": "custom",

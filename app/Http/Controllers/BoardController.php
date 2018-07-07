@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class BoardController extends Controller
 {
-    private $elasticsearchClient;
+    private $elasticsearchConfig;
     private $boardService;
 
     /**
@@ -19,51 +19,38 @@ class BoardController extends Controller
      */
     public function __construct(ElasticsearchConfig $elasticsearchConfig, BoardService $boardService)
     {
-        $this->elasticsearchClient = $elasticsearchConfig;
+        $this->elasticsearchConfig = $elasticsearchConfig;
         $this->boardService = $boardService;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function show(Board $board)
     {
-        //
-    }
+        $params = [
+            'index' => 'board',
+            'type' => 'v1',
+            'id' => $board['id']
+        ];
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
+        $result = $this->elasticsearchConfig->getClient()->get($params);
+        $board = $result['_source'];
 
+        return response()->json($board);
     }
 
     /**
      * Store a newly created resource in storage.
      *
+     * @param Request $request
+     * @param Board $board
      * @return string
      */
-    public function store()
+    public function store(Request $request, Board $board)
     {
+        $board->setAttributes($request->all());
 
-    }
+        $result = $this->boardService->store($board);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Board  $board
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Board $board)
-    {
-        $boardId = $board['id'];
-        $board = Board::search()->match("id", $boardId)->get();
-        print($board->hits()[0]);
+        return response()->json(['result' => $result]);
     }
 
     /**
@@ -88,6 +75,8 @@ class BoardController extends Controller
      */
     public function destroy(Board $board)
     {
+        $result = $this->boardService->delete($board);
 
+        return response()->json(['result' => $result]);
     }
 }

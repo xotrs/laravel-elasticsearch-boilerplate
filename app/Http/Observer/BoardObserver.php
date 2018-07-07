@@ -14,15 +14,15 @@ use ElasticsearchConfig;
 
 class BoardObserver
 {
-    protected $elasticsearchClient;
+    protected $elasticsearchConfig;
 
     /**
      * BoardObserver constructor.
-     * @param $elasticsearchClient
+     * @param ElasticsearchConfig $elasticsearchConfig
      */
-    public function __construct(ElasticsearchConfig $elasticsearchClient)
+    public function __construct(ElasticsearchConfig $elasticsearchConfig)
     {
-        $this->elasticsearchClient = $elasticsearchClient;
+        $this->elasticsearchConfig = $elasticsearchConfig;
     }
 
     public function updated(Board $board)
@@ -34,7 +34,35 @@ class BoardObserver
             'body' => $board
         ];
 
-        return $this->elasticsearchClient->getClient()->index($params);
+        return $this->elasticsearchConfig->getClient()->index($params);
+    }
+
+    public function created(Board $board)
+    {
+        $params = [
+            'index' => 'board',
+            'type' => 'v1',
+            'id' => $board['id'],
+            'body' => $board
+        ];
+
+        return $this->elasticsearchConfig->getClient()->index($params);
+    }
+
+    public function deleted(Board $board)
+    {
+        $params = [
+            'index' => 'board',
+            'type' => 'v1',
+            'id' => $board['id']
+        ];
+
+        if($this->elasticsearchConfig->getClient()->exists($params))
+        {
+            return $this->elasticsearchConfig->getClient()->delete($params);
+        }else{
+            return false;
+        }
     }
 
 }

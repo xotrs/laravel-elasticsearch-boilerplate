@@ -9,9 +9,11 @@
 namespace App\Repositories;
 
 use App\Board;
-use phpDocumentor\Reflection\Types\Boolean;
 
 interface BoardRepositoryInterface
 {
     public function update(Board $board) : bool;
+    public function delete(Board $board) : bool;
+    public function store(Board $board) : bool;
+    public function all();
 }

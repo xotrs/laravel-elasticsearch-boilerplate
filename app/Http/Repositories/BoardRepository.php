@@ -9,6 +9,7 @@
 namespace App\Repositories;
 
 use App\Board;
+use Exception;
 
 class BoardRepository implements BoardRepositoryInterface
 {
@@ -25,7 +26,42 @@ class BoardRepository implements BoardRepositoryInterface
      */
     public function update(Board $board) : bool
     {
-        $board->setAttributes($board->getFillable());
-        return $board->save();
+        try {
+            $board->setAttributes($board->getFillable());
+            return $board->save();
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * @param Board $board
+     * @return bool
+     */
+    public function delete(Board $board) : bool
+    {
+        try {
+            return Board::destroy($board['id']);
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * @param Board $board
+     * @return bool
+     */
+    public function store(Board $board) : bool
+    {
+        try {
+            return $board->save();
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    public function all()
+    {
+        return $this->board->all();
     }
 }
